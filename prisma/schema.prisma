@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @default(MENTEE)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Admin specific
+  isAdmin Boolean @default(false)
+  adminVerifiedAt DateTime?
+
+  // Mentor specific
+  mentorProfile MentorProfile?
+  mentorApplications MentorApplication[]
+  receivedRequests MentorRequest[]
+
+  // Mentee specific
+  menteeProfile MenteeProfile?
+  sentRequests MentorRequest[]
+
+  @@map("users")
+}
+
+model MentorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio         String
+  expertise   String[]
+  languages   String[]
+  availability String
+  photo       String?
+  experience  String
+  education   String
+  location    String
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mentor_profiles")
+}
+
+model MenteeProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio         String
+  goals       String[]
+  interests   String[]
+  location    String
+  education   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mentee_profiles")
+}
+
+model MentorApplication {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    ApplicationStatus @default(PENDING)
+  message   String?
+  adminNotes String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("mentor_applications")
+}
+
+model MentorRequest {
+  id        String   @id @default(cuid())
+  menteeId  String
+  mentorId  String
+  mentee    User     @relation("MenteeRequests", fields: [menteeId], references: [id], onDelete: Cascade)
+  mentor    User     @relation("MentorRequests", fields: [mentorId], references: [id], onDelete: Cascade)
+  status    RequestStatus @default(PENDING)
+  message   String
+  response  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("mentor_requests")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+enum Role {
+  ADMIN
+  MENTOR
+  MENTEE
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum NotificationType {
+  MENTOR_APPROVED
+  MENTOR_REJECTED
+  MENTOR_REQUEST
+  MENTOR_REQUEST_ACCEPTED
+  MENTOR_REQUEST_REJECTED
+}
