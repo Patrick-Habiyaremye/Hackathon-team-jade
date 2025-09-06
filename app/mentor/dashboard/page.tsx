@@ -128,7 +128,11 @@ export default function MentorDashboard() {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => {
+                  // Force clear auth state and go to home
+                  localStorage.removeItem('token')
+                  window.location.href = '/'
+                }}
                 className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
               >
                 Diaspora Bridge
@@ -139,8 +143,15 @@ export default function MentorDashboard() {
               </div>
             </div>
             <div className="flex space-x-4">
-              <button onClick={() => window.location.href = '/'} className="btn-secondary">
-                Home
+              <button 
+                onClick={() => {
+                  // Force clear auth state and go to home
+                  localStorage.removeItem('token')
+                  window.location.href = '/'
+                }} 
+                className="btn-secondary"
+              >
+                🏠 Home
               </button>
               <button
                 onClick={() => {

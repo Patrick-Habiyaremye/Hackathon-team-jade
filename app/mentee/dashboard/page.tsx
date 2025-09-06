@@ -199,7 +199,17 @@ export default function MenteeDashboard() {
                 onClick={() => window.location.href = '/'}
                 className="btn-secondary"
               >
-                Home
+                🏠 Home (Stay Logged In)
+              </button>
+              <button
+                onClick={() => {
+                  // Force clear auth state and go to home
+                  localStorage.removeItem('token')
+                  window.location.href = '/'
+                }}
+                className="btn-secondary"
+              >
+                🏠 Home (Logout)
               </button>
               <button
                 onClick={() => {
