@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
       },
       orderBy: {
         createdAt: 'desc'
-      }
+      },
+      take: 50 // Limit to 50 mentors for better performance
     })
 
     // Convert comma-separated strings back to arrays for frontend
@@ -42,7 +43,12 @@ export async function GET(request: NextRequest) {
       languages: mentor.languages ? mentor.languages.split(',').map((s: string) => s.trim()) : []
     }))
 
-    return NextResponse.json(mentorsWithArrays)
+    const response = NextResponse.json(mentorsWithArrays)
+    
+    // Add caching headers for better performance
+    response.headers.set('Cache-Control', 'private, max-age=300') // 5 minutes cache
+    
+    return response
   } catch (error) {
     console.error('Failed to fetch mentors:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })

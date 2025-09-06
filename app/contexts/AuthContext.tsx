@@ -52,17 +52,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
+      // Check if we're in the browser environment
+      if (typeof window === 'undefined') {
+        setLoading(false)
+        return
+      }
+
       const token = localStorage.getItem('token')
       if (!token) {
         setLoading(false)
         return
       }
 
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
       const response = await fetch('/api/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`
-        }
+        },
+        signal: controller.signal
       })
+
+      clearTimeout(timeoutId)
 
       if (response.ok) {
         const userData = await response.json()

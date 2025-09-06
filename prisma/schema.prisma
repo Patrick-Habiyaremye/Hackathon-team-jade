@@ -62,6 +62,8 @@ model MentorProfile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  @@index([isApproved])
+  @@index([createdAt])
   @@map("mentor_profiles")
 }
 
@@ -112,6 +114,10 @@ model MentorRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([menteeId])
+  @@index([mentorId])
+  @@index([status])
+  @@index([createdAt])
   @@map("mentor_requests")
 }
 
