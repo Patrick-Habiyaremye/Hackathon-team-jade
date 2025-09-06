@@ -21,8 +21,8 @@ export default function LoginPage() {
     const result = await login(email, password)
     
     if (result.success) {
-      // Redirect will be handled by the auth context
-      router.push('/')
+      // Redirect will be handled by the home page based on role
+      window.location.href = '/'
     } else {
       setError(result.message)
     }

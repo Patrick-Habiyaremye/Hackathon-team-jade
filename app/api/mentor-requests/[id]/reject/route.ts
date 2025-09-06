@@ -60,7 +60,7 @@ export async function PATCH(
         userId: mentorRequest.menteeId,
         title: 'Mentorship Request Rejected',
         message: `Your mentorship request has been rejected by ${user.firstName} ${user.lastName}.`,
-        type: 'REQUEST_REJECTED'
+        type: 'REQUEST_REJECTED' as any
       }
     })
 

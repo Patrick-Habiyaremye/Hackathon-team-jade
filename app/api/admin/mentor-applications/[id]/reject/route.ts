@@ -47,9 +47,7 @@ export async function PATCH(
     await prisma.mentorApplication.update({
       where: { id: params.id },
       data: {
-        status: 'REJECTED',
-        reviewedAt: new Date(),
-        reviewedBy: user.id
+        status: 'REJECTED'
       }
     })
 

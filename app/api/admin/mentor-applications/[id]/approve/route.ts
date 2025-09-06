@@ -49,6 +49,7 @@ export async function PATCH(
       data: {
         status: 'APPROVED'
       }
+    })
 
     // Update mentor profile to approved
     await prisma.mentorProfile.update({

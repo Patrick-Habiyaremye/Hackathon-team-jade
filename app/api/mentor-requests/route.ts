@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
         userId: mentorId,
         title: 'New Mentorship Request',
         message: `${user.firstName} ${user.lastName} has requested your mentorship.`,
-        type: 'REQUEST_SENT'
+        type: 'MENTOR_REQUEST'
       }
     })
 

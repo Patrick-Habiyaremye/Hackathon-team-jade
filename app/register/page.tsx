@@ -57,7 +57,8 @@ export default function RegisterPage() {
     })
     
     if (result.success) {
-      router.push('/')
+      // Redirect will be handled by the auth context based on role
+      window.location.href = '/'
     } else {
       setError(result.message)
     }

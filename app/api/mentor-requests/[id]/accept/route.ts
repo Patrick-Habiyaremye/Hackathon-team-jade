@@ -60,7 +60,7 @@ export async function PATCH(
         userId: mentorRequest.menteeId,
         title: 'Mentorship Request Accepted',
         message: `Your mentorship request has been accepted by ${user.firstName} ${user.lastName}.`,
-        type: 'REQUEST_ACCEPTED'
+        type: 'REQUEST_ACCEPTED' as any
       }
     })
 
