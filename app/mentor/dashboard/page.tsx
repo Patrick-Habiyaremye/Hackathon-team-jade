@@ -126,18 +126,26 @@ export default function MentorDashboard() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Mentor Dashboard</h1>
-              <p className="text-gray-600">Manage your mentorship requests</p>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => window.location.href = '/'}
+                className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+              >
+                Diaspora Bridge
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Mentor Dashboard</h1>
+                <p className="text-gray-600">Manage your mentorship requests</p>
+              </div>
             </div>
             <div className="flex space-x-4">
-              <button onClick={() => router.push('/')} className="btn-secondary">
+              <button onClick={() => window.location.href = '/'} className="btn-secondary">
                 Home
               </button>
               <button
                 onClick={() => {
                   localStorage.removeItem('token')
-                  router.push('/')
+                  window.location.href = '/'
                 }}
                 className="btn-danger"
               >

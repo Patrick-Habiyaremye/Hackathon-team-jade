@@ -182,13 +182,21 @@ export default function MenteeDashboard() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Find Your Mentor</h1>
-              <p className="text-gray-600">Connect with experienced diaspora professionals</p>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => window.location.href = '/'}
+                className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+              >
+                Diaspora Bridge
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Find Your Mentor</h1>
+                <p className="text-gray-600">Connect with experienced diaspora professionals</p>
+              </div>
             </div>
             <div className="flex space-x-4">
               <button
-                onClick={() => router.push('/')}
+                onClick={() => window.location.href = '/'}
                 className="btn-secondary"
               >
                 Home
@@ -196,7 +204,7 @@ export default function MenteeDashboard() {
               <button
                 onClick={() => {
                   localStorage.removeItem('token')
-                  router.push('/')
+                  window.location.href = '/'
                 }}
                 className="btn-danger"
               >
