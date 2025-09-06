@@ -104,23 +104,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 15000)
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        signal: controller.signal,
       })
+      clearTimeout(timeout)
 
-      const result = await response.json()
+      let result: any = {}
+      try { result = await response.json() } catch { /* ignore */ }
 
       if (response.ok) {
         return { success: true, message: 'Registration successful' }
       } else {
-        return { success: false, message: result.message || 'Registration failed' }
+        const serverMessage = result?.message || `Request failed (${response.status})`
+        return { success: false, message: serverMessage }
       }
-    } catch (error) {
-      return { success: false, message: 'Network error' }
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
+        return { success: false, message: 'Request timed out. Please try again.' }
+      }
+      return { success: false, message: error?.message || 'Network error' }
     }
   }
 

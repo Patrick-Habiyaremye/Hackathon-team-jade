@@ -35,9 +35,18 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json(mentors)
+    // Convert comma-separated strings back to arrays for frontend
+    const mentorsWithArrays = mentors.map((mentor: any) => ({
+      ...mentor,
+      expertise: mentor.expertise ? mentor.expertise.split(',').map((s: string) => s.trim()) : [],
+      languages: mentor.languages ? mentor.languages.split(',').map((s: string) => s.trim()) : []
+    }))
+
+    return NextResponse.json(mentorsWithArrays)
   } catch (error) {
     console.error('Failed to fetch mentors:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }
+
+

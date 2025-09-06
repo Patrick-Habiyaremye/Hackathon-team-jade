@@ -16,12 +16,15 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
+    // Mark all notifications as read
     await prisma.notification.updateMany({
-      where: { 
+      where: {
         userId: decoded.userId,
         isRead: false
       },
-      data: { isRead: true }
+      data: {
+        isRead: true
+      }
     })
 
     return NextResponse.json({ message: 'All notifications marked as read' })

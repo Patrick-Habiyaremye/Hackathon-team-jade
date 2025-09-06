@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user.id,
           bio: profileData.bio || '',
-          expertise: profileData.expertise || [],
-          languages: profileData.languages || [],
+          expertise: Array.isArray(profileData.expertise) ? profileData.expertise.join(',') : (profileData.expertise || ''),
+          languages: Array.isArray(profileData.languages) ? profileData.languages.join(',') : (profileData.languages || ''),
           availability: profileData.availability || '',
           experience: profileData.experience || '',
           education: profileData.education || '',
@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user.id,
           bio: profileData.bio || '',
-          goals: profileData.goals || [],
-          interests: profileData.interests || [],
+          goals: Array.isArray(profileData.goals) ? profileData.goals.join(',') : (profileData.goals || ''),
+          interests: Array.isArray(profileData.interests) ? profileData.interests.join(',') : (profileData.interests || ''),
           location: profileData.location || '',
           education: profileData.education || ''
         }
@@ -82,3 +82,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }
+
+

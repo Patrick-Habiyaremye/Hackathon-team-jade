@@ -19,17 +19,20 @@ export async function PATCH(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
-    const admin = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     })
 
-    if (!admin || !admin.isAdmin) {
+    if (!user || !user.isAdmin) {
       return NextResponse.json({ message: 'Admin access required' }, { status: 403 })
     }
 
+    // Find the application
     const application = await prisma.mentorApplication.findUnique({
       where: { id: params.id },
-      include: { user: true }
+      include: {
+        user: true
+      }
     })
 
     if (!application) {
@@ -43,33 +46,31 @@ export async function PATCH(
     // Update application status
     await prisma.mentorApplication.update({
       where: { id: params.id },
-      data: { status: 'APPROVED' }
-    })
+      data: {
+        status: 'APPROVED'
+      }
 
-    // Update user role and mentor profile
-    await prisma.user.update({
-      where: { id: application.userId },
-      data: { role: 'MENTOR' }
-    })
-
+    // Update mentor profile to approved
     await prisma.mentorProfile.update({
       where: { userId: application.userId },
-      data: { isApproved: true }
+      data: {
+        isApproved: true
+      }
     })
 
-    // Create notification
+    // Create notification for the mentor
     await prisma.notification.create({
       data: {
         userId: application.userId,
         title: 'Mentor Application Approved',
-        message: 'Congratulations! Your mentor application has been approved. You can now be discovered by mentees.',
+        message: 'Congratulations! Your mentor application has been approved. You can now receive mentorship requests.',
         type: 'MENTOR_APPROVED'
       }
     })
 
     return NextResponse.json({ message: 'Application approved successfully' })
   } catch (error) {
-    console.error('Failed to approve application:', error)
+    console.error('Failed to approve mentor application:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }

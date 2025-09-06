@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../../contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
 interface MentorRequest {
@@ -23,19 +23,31 @@ export default function MentorDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (user && user.role !== 'MENTOR') {
+    if (!user) return
+
+    if (user.role !== 'MENTOR') {
       router.push('/')
       return
     }
-    fetchRequests()
+
+    const fetchData = async () => {
+      await fetchRequests()
+    }
+
+    fetchData()
   }, [user, router])
 
   const fetchRequests = async () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
+
     try {
-      const token = localStorage.getItem('token')
       const response = await fetch('/api/mentor-requests', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       })
 
@@ -51,19 +63,25 @@ export default function MentorDashboard() {
   }
 
   const handleRequestAction = async (requestId: string, action: 'accept' | 'reject') => {
-    const response = action === 'accept' ? 
-      prompt('Add a response message (optional):') : 
-      prompt('Add a reason for rejection (optional):')
+    const responseMessage =
+      action === 'accept'
+        ? prompt('Add a response message (optional):')
+        : prompt('Add a reason for rejection (optional):')
+
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
 
     try {
-      const token = localStorage.getItem('token')
       const res = await fetch(`/api/mentor-requests/${requestId}/${action}`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ response })
+        body: JSON.stringify({ response: responseMessage })
       })
 
       if (res.ok) {
@@ -98,9 +116,9 @@ export default function MentorDashboard() {
     )
   }
 
-  const pendingRequests = requests.filter(req => req.status === 'PENDING')
-  const acceptedRequests = requests.filter(req => req.status === 'ACCEPTED')
-  const rejectedRequests = requests.filter(req => req.status === 'REJECTED')
+  const pendingRequests = requests.filter((req) => req.status === 'PENDING')
+  const acceptedRequests = requests.filter((req) => req.status === 'ACCEPTED')
+  const rejectedRequests = requests.filter((req) => req.status === 'REJECTED')
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,10 +131,7 @@ export default function MentorDashboard() {
               <p className="text-gray-600">Manage your mentorship requests</p>
             </div>
             <div className="flex space-x-4">
-              <button
-                onClick={() => router.push('/')}
-                className="btn-secondary"
-              >
+              <button onClick={() => router.push('/')} className="btn-secondary">
                 Home
               </button>
               <button
@@ -171,12 +186,10 @@ export default function MentorDashboard() {
                       PENDING
                     </span>
                   </div>
-                  
+
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2">Message:</h4>
-                    <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
-                      {request.message}
-                    </p>
+                    <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{request.message}</p>
                   </div>
 
                   <div className="flex space-x-3">

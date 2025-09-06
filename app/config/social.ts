@@ -1,18 +1,19 @@
 export const emailAddress = 'ndamukundavainqueur@gmail.com'
+export const phoneNumber = '0784702015'
 
 // Use international format for WhatsApp without leading + or zeros if applicable.
 // Rwanda country code: 250 → 250784702015
-export const whatsappNumber = '250784702015'
+export const whatsappNumber = ''
 export const whatsappDefaultMessage = 'Hello! I came from Diaspora Bridge.'
 
 // Social usernames or direct profile paths
-export const facebookProfileUrl = 'https://www.facebook.com/ndamukunda.vanqueur'
-export const instagramProfileUrl = 'https://www.instagram.com/rumanzi_boi/'
-export const xProfileUrl = 'https://x.com/Ndamukunda37603'
+export const facebookUsername = '' // for Messenger DM: m.me/<username>
+export const instagramUsername = '' // for IG DM: ig.me/m/<username>
+export const xProfileUrl = ''
 export const telegramUsername = ''
 
 export const linkedinProfileUrl = ''
-export const locationText = 'Rwamagana, Gishali, Eastern Province'
+export const locationText = ''
 
 export function buildWhatsappLink() {
   if (!whatsappNumber) return ''
@@ -22,13 +23,11 @@ export function buildWhatsappLink() {
 }
 
 export function buildMessengerLink() {
-  // If you later want to use Messenger username, switch to m.me/<username>
-  return facebookProfileUrl || ''
+  return facebookUsername ? `https://m.me/${facebookUsername}` : ''
 }
 
 export function buildInstagramDmLink() {
-  // IG DM links require username; profile link is provided instead
-  return instagramProfileUrl || ''
+  return instagramUsername ? `https://ig.me/m/${instagramUsername}` : ''
 }
 
 export function buildTelegramLink() {

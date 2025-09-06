@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import {
   emailAddress,
+  phoneNumber,
   buildWhatsappLink,
   buildMessengerLink,
   buildInstagramDmLink,
@@ -44,6 +45,9 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               {emailAddress && (
                 <li><a href={`mailto:${emailAddress}`} className="hover:text-primary-500">{emailAddress}</a></li>
+              )}
+              {phoneNumber && (
+                <li><a href={`tel:${phoneNumber}`} className="hover:text-primary-500">{phoneNumber}</a></li>
               )}
               {buildWhatsappLink() && (
                 <li><a href={buildWhatsappLink()} target="_blank" className="hover:text-primary-500">WhatsApp Chat</a></li>

@@ -49,6 +49,7 @@ export default function RegisterPage() {
 
     const result = await register({
       ...formData,
+      type: formData.type as 'mentor' | 'mentee',
       expertise: formData.expertise ? formData.expertise.split(',').map(s => s.trim()) : [],
       goals: formData.goals ? formData.goals.split(',').map(s => s.trim()) : [],
       interests: formData.interests ? formData.interests.split(',').map(s => s.trim()) : [],
@@ -85,6 +86,41 @@ export default function RegisterPage() {
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="bg-white shadow rounded-lg p-6">
+            {/* Role Selection - MOVE TO TOP */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                I want to:
+              </label>
+              {/* Prominent quick select buttons on top */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, type: 'mentee' }))}
+                  className={`w-full sm:w-1/2 px-4 py-3 rounded-lg border transition-colors ${
+                    formData.type === 'mentee'
+                      ? 'bg-primary-600 text-white border-primary-600'
+                      : 'bg-dark-800 text-white border-gray-700 hover:border-primary-600'
+                  }`}
+                >
+                  Become a Mentee
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, type: 'mentor' }))}
+                  className={`w-full sm:w-1/2 px-4 py-3 rounded-lg border transition-colors ${
+                    formData.type === 'mentor'
+                      ? 'bg-primary-600 text-white border-primary-600'
+                      : 'bg-dark-800 text-white border-gray-700 hover:border-primary-600'
+                  }`}
+                >
+                  Become a Mentor
+                </button>
+              </div>
+
+              {/* Hidden field to carry current type without visual radios */}
+              <input type="hidden" name="type" value={formData.type} />
+            </div>
+
             {/* Basic Information */}
             <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
             
@@ -165,36 +201,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Role Selection */}
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                I want to:
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="type"
-                    value="mentee"
-                    checked={formData.type === 'mentee'}
-                    onChange={handleChange}
-                    className="mr-3"
-                  />
-                  <span>Find a mentor (I'm looking for guidance)</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="type"
-                    value="mentor"
-                    checked={formData.type === 'mentor'}
-                    onChange={handleChange}
-                    className="mr-3"
-                  />
-                  <span>Become a mentor (I want to help others)</span>
-                </label>
-              </div>
-            </div>
+            
 
             {/* Bio */}
             <div className="mt-6">

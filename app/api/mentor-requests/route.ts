@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
         userId: mentorId,
         title: 'New Mentorship Request',
         message: `${user.firstName} ${user.lastName} has requested your mentorship.`,
-        type: 'MENTOR_REQUEST'
+        type: 'REQUEST_SENT'
       }
     })
 
@@ -144,3 +144,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }
+
+

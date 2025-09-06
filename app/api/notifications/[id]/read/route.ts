@@ -19,21 +19,15 @@ export async function PATCH(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
-    const notification = await prisma.notification.findUnique({
-      where: { id: params.id }
-    })
-
-    if (!notification) {
-      return NextResponse.json({ message: 'Notification not found' }, { status: 404 })
-    }
-
-    if (notification.userId !== decoded.userId) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-    }
-
-    await prisma.notification.update({
-      where: { id: params.id },
-      data: { isRead: true }
+    // Update notification as read
+    await prisma.notification.updateMany({
+      where: {
+        id: params.id,
+        userId: decoded.userId
+      },
+      data: {
+        isRead: true
+      }
     })
 
     return NextResponse.json({ message: 'Notification marked as read' })

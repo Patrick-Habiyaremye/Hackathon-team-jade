@@ -19,6 +19,8 @@ export async function PATCH(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
+    const { response } = await request.json()
+
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     })
@@ -27,26 +29,23 @@ export async function PATCH(
       return NextResponse.json({ message: 'Only mentors can reject requests' }, { status: 403 })
     }
 
-    const { response } = await request.json()
-
-    const mentorRequest = await prisma.mentorRequest.findUnique({
-      where: { id: params.id },
-      include: { mentee: true }
+    // Find the request and verify it belongs to this mentor
+    const mentorRequest = await prisma.mentorRequest.findFirst({
+      where: {
+        id: params.id,
+        mentorId: user.id,
+        status: 'PENDING'
+      },
+      include: {
+        mentee: true
+      }
     })
 
     if (!mentorRequest) {
-      return NextResponse.json({ message: 'Request not found' }, { status: 404 })
+      return NextResponse.json({ message: 'Request not found or already processed' }, { status: 404 })
     }
 
-    if (mentorRequest.mentorId !== user.id) {
-      return NextResponse.json({ message: 'You can only reject your own requests' }, { status: 403 })
-    }
-
-    if (mentorRequest.status !== 'PENDING') {
-      return NextResponse.json({ message: 'Request already processed' }, { status: 400 })
-    }
-
-    // Update request status
+    // Update the request status
     await prisma.mentorRequest.update({
       where: { id: params.id },
       data: {
@@ -60,14 +59,14 @@ export async function PATCH(
       data: {
         userId: mentorRequest.menteeId,
         title: 'Mentorship Request Rejected',
-        message: `${user.firstName} ${user.lastName} has rejected your mentorship request.`,
-        type: 'MENTOR_REQUEST_REJECTED'
+        message: `Your mentorship request has been rejected by ${user.firstName} ${user.lastName}.`,
+        type: 'REQUEST_REJECTED'
       }
     })
 
     return NextResponse.json({ message: 'Request rejected successfully' })
   } catch (error) {
-    console.error('Failed to reject request:', error)
+    console.error('Failed to reject mentor request:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }
